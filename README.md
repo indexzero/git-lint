@@ -17,5 +17,9 @@ gitLint(function (err) {
 });
 ```
 
+## Rules
+
+* `autocrlf`: Ensures that line endings are correctly set by `git` (source: [Dealing with line endings](https://help.github.com/articles/dealing-with-line-endings/))
+
 ##### AUTHOR: [Charlie Robbins](https://github.com/indexzero)
 ##### LICENSE: MIT
