@@ -4,6 +4,7 @@
   "description": "Lint gitconfig files for fun and profit",
   "main": "index.js",
   "scripts": {
+    "pretest": "common index.js test/",
     "test": "istanbul cover ./node_modules/.bin/_mocha test/*.test.js"
   },
   "repository": {

@@ -1,3 +1,5 @@
+/* jshint mocha: true */
+
 'use strict';
 
 var assume = require('assume'),
