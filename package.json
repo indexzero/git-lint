@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "async": "^1.4.2",
+    "errs": "^0.3.2",
     "ini": "^1.3.4",
     "lodash.merge": "^3.3.2",
     "object-assign": "^4.0.1"

@@ -22,14 +22,28 @@ var defaults = {
  * the global git config and the local git config and then
  * asserting that certain values are present.
  */
-module.exports = function (options, callback) {
+var gitLint = module.exports = function (options, callback) {
   if (typeof options === 'function') {
     callback = options;
     options = {};
   }
 
   var opts = assign({}, defaults, options);
+  gitLint.readConfig(opts, function (err, config) {
+    if (err) { return callback(err); }
+    gitLint.run(opts, config, callback);
+  });
+};
 
+/*
+ * Export defaults for testability
+ */
+gitLint.defaults = defaults;
+
+/*
+ * Reads and merges the git config at `~/.gitconfig` and `./.git/config`
+ */
+gitLint.readConfig = function (opts, callback) {
   async.parallel({
     global: async.apply(fs.readFile, path.join(opts.homeDir, '.gitconfig'), 'utf8'),
     local: async.apply(fs.readFile, path.join(opts.cwd, '.git', 'config'), 'utf8')
@@ -38,12 +52,36 @@ module.exports = function (options, callback) {
       return callback(err);
     }
 
-    var config = merge(
+    callback(null, merge(
       {},
       ini.parse(files.global || ''),
       ini.parse(files.local || '')
-    );
+    ));
+  });
+};
 
-    callback(null, config);
+/**
+ * Runs all rules on the specified config
+ */
+gitLint.run = function runRules(opts, config, callback) {
+  var rulesDir = path.join(__dirname, 'rules');
+
+  fs.readdir(rulesDir, function (err, rules) {
+    if (err) { return callback(err); }
+
+    var errors = {};
+
+    rules.forEach(function runOne(rule, next) {
+      var result = require(path.join(rulesDir, rule))(opts, config),
+          name = path.basename(rule, '.js');
+
+      if (result) {
+        errors[name] = result;
+      }
+    });
+
+    return Object.keys(errors).length
+      ? callback(errors, config)
+      : callback(null, config);
   });
 };
