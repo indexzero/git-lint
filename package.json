@@ -1,6 +1,6 @@
 {
   "name": "git-lint",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Lint gitconfig files for fun and profit",
   "main": "index.js",
   "scripts": {
